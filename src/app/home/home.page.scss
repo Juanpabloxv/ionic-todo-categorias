@@ -1,0 +1,23 @@
+/* Estilos específicos para móvil */
+@media (max-width: 768px) {
+  .mobile-input, .mobile-select {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    width: 100% !important;
+  }
+
+  .add-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+
+  ion-item {
+    --min-height: 50px;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+  }
+
+  ion-segment {
+    margin-bottom: 15px;
+  }
+}

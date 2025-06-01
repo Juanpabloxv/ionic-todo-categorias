@@ -1,0 +1,23 @@
+<ion-list>
+  <ion-item *ngFor="let task of filteredTasks()">
+    <ion-label>
+      <h2>{{ task.title }}</h2>
+      <p *ngIf="task.categoryId">Categoría: {{ getCategoryName(task.categoryId) }}</p>
+    </ion-label>
+
+    <ion-checkbox
+      slot="end"
+      [checked]="task.completed"
+      (ionChange)="onToggleCompleted(task)">
+    </ion-checkbox>
+
+    <ion-button
+      slot="end"
+      fill="clear"
+      color="danger"
+      (click)="onDeleteTask(task)"
+      title="Eliminar tarea">
+      <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-list>

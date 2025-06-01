@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ionic-app:
+    build: .
+    ports:
+      - "8100:8100"
+      - "35729:35729"  
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - DISABLE_HOST_CHECK=true
+    stdin_open: true  
+    tty: true         

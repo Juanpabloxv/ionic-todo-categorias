@@ -1,0 +1,43 @@
+/* Estilos específicos para móvil */
+@media (max-width: 768px) {
+  .mobile-input {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    width: 100% !important;
+  }
+
+  .category-item {
+    --min-height: 60px;
+    --padding-start: 8px;
+    --inner-padding-end: 8px;
+  }
+
+  .add-category-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    margin-top: 16px;
+  }
+
+  .add-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+    margin-right: 4px;
+  }
+
+  .edit-container, .view-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .edit-actions, .item-actions {
+    display: flex;
+    margin-left: 8px;
+  }
+
+  .category-name {
+    flex: 1;
+    margin-right: 8px;
+  }
+}
