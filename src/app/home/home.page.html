@@ -30,7 +30,9 @@
     [categories]="categories"
     [filterCategoryId]="filterCategoryId"
     (toggleCompleted)="toggleCompleted($event)"
-    (deleteTask)="confirmDeleteTask($event)">
+    (deleteTask)="confirmDeleteTask($event)"
+    (editTask)="onEditTask($event)"
+  >
   </app-task-list>
 
   <!-- Agregar nueva tarea - Versión optimizada para móvil -->

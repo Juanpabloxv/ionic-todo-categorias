@@ -35,19 +35,20 @@ export class TaskService {
 
   // Tasks
   addTask(task: Task) {
-    const tasks = this.loadTasks();
-    tasks.push(task);
-    this.saveTasks(tasks);
+    const currentTasks = this.tasksSubject.getValue();
+    this.saveTasks([...currentTasks, task]);
   }
 
   updateTask(updated: Task) {
-    const tasks = this.loadTasks().map(t => t.id === updated.id ? updated : t);
-    this.saveTasks(tasks);
+    const currentTasks = this.tasksSubject.getValue();
+    const updatedTasks = currentTasks.map(t => t.id === updated.id ? updated : t);
+    this.saveTasks(updatedTasks);
   }
 
   deleteTask(id: string) {
-    const tasks = this.loadTasks().filter(t => t.id !== id);
-    this.saveTasks(tasks);
+    const currentTasks = this.tasksSubject.getValue();
+    const updatedTasks = currentTasks.filter(t => t.id !== id);
+    this.saveTasks(updatedTasks);
   }
 
   // Categories
@@ -58,16 +59,15 @@ export class TaskService {
   }
 
   updateCategory(updated: Category) {
-  const current = this.categoriesSubject.getValue();
-  const updatedList = current.map(c => c.id === updated.id ? updated : c);
-  this.saveCategories(updatedList);
-}
+    const current = this.categoriesSubject.getValue();
+    const updatedList = current.map(c => c.id === updated.id ? updated : c);
+    this.saveCategories(updatedList);
+  }
 
   deleteCategory(id: string) {
     const cats = this.loadCategories().filter(c => c.id !== id);
     this.saveCategories(cats);
 
-    // Opcional: eliminar categoría de tareas asignadas
     const tasks = this.loadTasks().map(t => t.categoryId === id ? { ...t, categoryId: undefined } : t);
     this.saveTasks(tasks);
   }
