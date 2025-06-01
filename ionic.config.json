@@ -1,0 +1,7 @@
+{
+  "name": "ionic-todo-categorias",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular-standalone"
+}
