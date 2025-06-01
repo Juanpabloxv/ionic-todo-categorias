@@ -109,4 +109,8 @@ export class HomePage {
     const category = this.categories.find(c => c.id === categoryId);
     return category ? category.name : '';
   }
+
+  onEditTask(updatedTask: Task) {
+  this.taskService.updateTask(updatedTask);
+}
 }

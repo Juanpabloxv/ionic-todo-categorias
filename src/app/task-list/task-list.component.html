@@ -1,23 +1,51 @@
 <ion-list>
-  <ion-item *ngFor="let task of filteredTasks()">
-    <ion-label>
-      <h2>{{ task.title }}</h2>
-      <p *ngIf="task.categoryId">Categoría: {{ getCategoryName(task.categoryId) }}</p>
-    </ion-label>
+  <ion-item *ngFor="let task of filteredTasks()" lines="full" class="task-item">
 
-    <ion-checkbox
-      slot="end"
-      [checked]="task.completed"
-      (ionChange)="onToggleCompleted(task)">
-    </ion-checkbox>
+    <!-- Modo edición -->
+    <div *ngIf="editingTaskId === task.id" class="edit-container" style="display: flex; align-items: center; gap: 8px;">
+      <ion-input
+        [(ngModel)]="editedTaskTitle"
+        placeholder="Editar título"
+        clearInput
+        autocorrect="off"
+        autocomplete="off"
+        autocapitalize="sentences"
+        style="flex: 1;"
+      ></ion-input>
 
-    <ion-button
-      slot="end"
-      fill="clear"
-      color="danger"
-      (click)="onDeleteTask(task)"
-      title="Eliminar tarea">
-      <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-    </ion-button>
+      <ion-button fill="clear" color="success" (click)="updateTask(task)" title="Guardar" size="small">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" color="medium" (click)="cancelEditing()" title="Cancelar" size="small">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </div>
+
+    <!-- Modo visualización -->
+    <div *ngIf="editingTaskId !== task.id" class="view-container" style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+      
+      <ion-label class="task-info" style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        <span class="task-title">{{ task.title }}</span>
+        <span *ngIf="task.categoryId" class="task-category" style="color: gray; font-size: 0.9em; margin-left: 6px;">
+          ({{ getCategoryName(task.categoryId) }})
+        </span>
+      </ion-label>
+
+      <ion-checkbox
+        slot="end"
+        [checked]="task.completed"
+        (ionChange)="onToggleCompleted(task)"
+        style="margin-left: 10px;"
+      ></ion-checkbox>
+
+      <ion-button fill="clear" color="primary" (click)="startEditing(task)" title="Editar" size="small" style="margin-left: 6px;">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" color="danger" (click)="onDeleteTask(task)" title="Eliminar" size="small" style="margin-left: 6px;">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+
+    </div>
   </ion-item>
 </ion-list>

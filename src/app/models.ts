@@ -8,4 +8,5 @@ export interface Task {
   title: string;
   completed: boolean;
   categoryId?: string;
+  editing?: boolean;
 }
