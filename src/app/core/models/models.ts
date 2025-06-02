@@ -1,13 +1,14 @@
 export interface Category {
-  id: string;
+  id: number;
   name: string;
 }
 
 export interface Task {
-  id: string;
+  id: number;
   title: string;
   description?: string;
-  completed: boolean;
-  categoryId?: string;
-  editing?: boolean;
+  status: 'pending' | 'completed';
+  category: Category | null;       
+  category_id?: number | null;      
+  editing?: boolean;            
 }

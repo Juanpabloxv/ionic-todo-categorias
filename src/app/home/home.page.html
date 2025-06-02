@@ -17,7 +17,7 @@
     (ionChange)="setFilter(filterCategoryId)"
     scrollable
   >
-    <ion-segment-button value="">
+    <ion-segment-button [value]="null">
       <ion-label>Todos</ion-label>
     </ion-segment-button>
     <ion-segment-button *ngFor="let cat of categories" [value]="cat.id">
@@ -25,7 +25,6 @@
     </ion-segment-button>
   </ion-segment>
 
-  <!-- Lista de tareas (componente reutilizable) -->
   <app-task-list
     [tasks]="tasks"
     [categories]="categories"
@@ -35,7 +34,6 @@
     (editTask)="onEditTaskRequest($event)"
   ></app-task-list>
 
-  <!-- FORMULARIO PARA AGREGAR NUEVA TAREA -->
   <ion-list>
     <ion-item>
       <ion-select
@@ -45,7 +43,7 @@
         interface="action-sheet"
         class="mobile-select"
       >
-        <ion-select-option [value]="''">Sin categoría</ion-select-option>
+        <ion-select-option [value]="null">Sin categoría</ion-select-option>
         <ion-select-option *ngFor="let cat of categories" [value]="cat.id">
           {{ cat.name }}
         </ion-select-option>

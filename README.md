@@ -51,7 +51,21 @@ Esto levantará la aplicación de forma local en el navegador.
 > - `8100:8100` (Ionic App)
 > - `35729:35729` (Live Reload)
 
-Una vez desplegada en la nube, se agregará la URL pública aquí para que puedas probarla directamente desde el navegador.
+---
+
+### 🌐 Acceso en la nube
+
+Puedes consultar el aplicativo frontend desplegado en la siguiente URL:
+
+**👉 [http://89.116.26.26:8100](http://89.116.26.26:8100)**
+
+---
+
+### 📱 Archivo APK generado
+
+El archivo APK compilado para Android ya se encuentra disponible en esta misma carpeta, junto a este archivo `README.md`. Puedes transferirlo a tu dispositivo Android para instalarlo y probar la aplicación sin necesidad de compilarla.
+
+---
 
 ### 3. Detener la Aplicación
 
@@ -92,19 +106,11 @@ docker-compose down --volumes
 
 - Aunque puedes ejecutar la aplicación con Ionic CLI de manera local, **se recomienda usar Docker y Docker Compose para evitar problemas de configuración**.
 - Para pruebas en dispositivos reales, se deben generar y firmar los APK e IPA.
-- Una vez esté disponible la versión en la nube, se incluirá aquí la URL de acceso.
+- Ya se encuentra disponible una versión desplegada en la nube.
+- El APK se encuentra adjunto localmente para pruebas rápidas en Android.
 
 ---
-## Instalación y Uso
-El repositorio incluye:
 
-- Código fuente completo de la aplicación.
-
-- Un archivo APK generado para Android.
-
-- El proyecto web que puede ejecutarse en el navegador.
-
-Instrucciones detalladas en este archivo README para levantar la app localmente o compilarla para dispositivos móviles.
 ## Contribuciones
 
 Puedes contribuir con mejoras, reportar errores o sugerir nuevas funcionalidades en el [repositorio de GitHub](https://github.com/Juanpabloxv/ionic-todo-categorias).

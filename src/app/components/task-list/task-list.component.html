@@ -1,34 +1,32 @@
 <ion-list>
   <ion-item *ngFor="let task of filteredTasks()" lines="full" class="task-item">
-
     <div class="view-container" style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
       
       <ion-label class="task-info" style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
         <div>
-          <span class="task-title" [class.completed]="task.completed">{{ task.title }}</span>
+          <span class="task-title" [class.completed]="task.status === 'completed'">{{ task.title }}</span>
         </div>
 
         <div class="task-description" style="font-size: 0.9em; color: gray;">
           {{ task.description || 'Sin descripción' }}
         </div>
 
-        <div *ngIf="task.categoryId" class="task-category" style="color: gray; font-size: 0.8em; margin-top: 2px;">
-          ({{ getCategoryName(task.categoryId) }})
+        <div *ngIf="task.category_id" class="task-category" style="color: gray; font-size: 0.8em; margin-top: 2px;">
+          ({{ getCategoryName(task.category_id) }})
         </div>
 
-        <ion-badge [color]="task.completed ? 'success' : 'warning'" style="margin-top: 4px;">
-          {{ task.completed ? 'Completada' : 'Pendiente' }}
+        <ion-badge [color]="task.status === 'completed' ? 'success' : 'warning'" style="margin-top: 4px;">
+          {{ task.status === 'completed' ? 'Completada' : 'Pendiente' }}
         </ion-badge>
       </ion-label>
 
       <ion-checkbox
         slot="end"
-        [checked]="task.completed"
+        [checked]="task.status === 'completed'"
         (ionChange)="onToggleCompleted(task)"
         style="margin-left: 10px;"
       ></ion-checkbox>
 
-      <!-- ✅ Nuevo botón editar que lanza modal -->
       <ion-button fill="clear" color="primary" (click)="onEditTask(task)" title="Editar" size="small" style="margin-left: 6px;">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
@@ -37,6 +35,5 @@
         <ion-icon name="trash-outline"></ion-icon>
       </ion-button>
     </div>
-
   </ion-item>
 </ion-list>

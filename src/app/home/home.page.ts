@@ -1,7 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { TaskService } from '../core/services/task.service';
 import { Task, Category } from '../core/models/models';
-import { v4 as uuidv4 } from 'uuid';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 import { CommonModule } from '@angular/common';
@@ -29,7 +28,7 @@ import { TaskListComponent } from '../components/task-list/task-list.component';
 export class HomePage {
   tasks: Task[] = [];
   categories: Category[] = [];
-  filterCategoryId: string | null = null;
+  filterCategoryId: number | null = null;  // CAMBIO
   newTaskTitle = '';
   newTaskDescription = '';
 
@@ -49,15 +48,15 @@ export class HomePage {
 
   addTask() {
     if (!this.newTaskTitle.trim()) return;
-    const task: Task = {
-      id: uuidv4(),
+
+    const taskData: Partial<Task> = {
       title: this.newTaskTitle.trim(),
       description: this.newTaskDescription.trim(),
-      completed: false,
-      categoryId: this.filterCategoryId || undefined
+      status: 'pending',
+      category_id: this.filterCategoryId ?? undefined  // CAMBIO
     };
 
-    this.taskService.addTask(task);
+    this.taskService.addTask(taskData);
     this.newTaskTitle = '';
     this.newTaskDescription = '';
 
@@ -71,7 +70,8 @@ export class HomePage {
   }
 
   toggleCompleted(task: Task) {
-    this.taskService.updateTask({ ...task, completed: !task.completed });
+    const updatedStatus = task.status === 'completed' ? 'pending' : 'completed';
+    this.taskService.updateTask({ ...task, status: updatedStatus }); // CAMBIO
   }
 
   deleteTask(task: Task) {
@@ -96,17 +96,17 @@ export class HomePage {
   }
 
   filteredTasks() {
-    if (!this.filterCategoryId) return this.tasks;
-    return this.tasks.filter(t => t.categoryId === this.filterCategoryId);
+    if (this.filterCategoryId === null) return this.tasks;
+    return this.tasks.filter(t => t.category_id === this.filterCategoryId); // CAMBIO
   }
 
-  setFilter(categoryId: string | null) {
-    this.filterCategoryId = categoryId;
+  setFilter(category_id: number | null) {
+    this.filterCategoryId = category_id;
   }
 
-  getCategoryName(categoryId: string | undefined): string {
-    if (!categoryId) return '';
-    const category = this.categories.find(c => c.id === categoryId);
+  getCategoryName(category_id: number | undefined): string {
+    if (!category_id) return '';
+    const category = this.categories.find(c => c.id === category_id); // CAMBIO
     return category ? category.name : '';
   }
 

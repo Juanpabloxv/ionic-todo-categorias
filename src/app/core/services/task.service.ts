@@ -1,75 +1,89 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Task, Category } from '../models/models';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
-  private tasksKey = 'tasks';
-  private categoriesKey = 'categories';
-
-  private tasksSubject = new BehaviorSubject<Task[]>(this.loadTasks());
-  private categoriesSubject = new BehaviorSubject<Category[]>(this.loadCategories());
+  private tasksSubject = new BehaviorSubject<Task[]>([]);
+  private categoriesSubject = new BehaviorSubject<Category[]>([]);
 
   tasks$ = this.tasksSubject.asObservable();
   categories$ = this.categoriesSubject.asObservable();
 
-  private loadTasks(): Task[] {
-    const data = localStorage.getItem(this.tasksKey);
-    return data ? JSON.parse(data) : [];
+  constructor(private api: ApiService) {
+    this.loadAllData();
   }
 
-  private loadCategories(): Category[] {
-    const data = localStorage.getItem(this.categoriesKey);
-    return data ? JSON.parse(data) : [];
-  }
-
-  private saveTasks(tasks: Task[]) {
-    localStorage.setItem(this.tasksKey, JSON.stringify(tasks));
-    this.tasksSubject.next(tasks);
-  }
-
-  private saveCategories(categories: Category[]) {
-    localStorage.setItem(this.categoriesKey, JSON.stringify(categories));
-    this.categoriesSubject.next(categories);
+  private loadAllData() {
+    this.api.getCategories().subscribe(categories => this.categoriesSubject.next(categories));
+    this.api.getTasks().subscribe(tasksFromApi => {
+      const adaptedTasks = tasksFromApi.map(task => ({
+        ...task,
+        category_id: task.category?.id ?? null // Adaptamos para usar en el frontend
+      }));
+      this.tasksSubject.next(adaptedTasks);
+    });
   }
 
   // Tasks
-  addTask(task: Task) {
-    const currentTasks = this.tasksSubject.getValue();
-    this.saveTasks([...currentTasks, task]);
+  addTask(task: Partial<Task>) {
+    this.api.createTask(task).subscribe(newTask => {
+      const adaptedTask = {
+        ...newTask,
+        category_id: newTask.category?.id ?? null
+      };
+      const current = this.tasksSubject.getValue();
+      this.tasksSubject.next([...current, adaptedTask]);
+    });
   }
 
   updateTask(updated: Task) {
-    const currentTasks = this.tasksSubject.getValue();
-    const updatedTasks = currentTasks.map(t => t.id === updated.id ? updated : t);
-    this.saveTasks(updatedTasks);
+    this.api.updateTask(updated.id, updated).subscribe(task => {
+      const adaptedTask = {
+        ...task,
+        category_id: task.category?.id ?? null
+      };
+      const updatedTasks = this.tasksSubject.getValue().map(t =>
+        t.id === task.id ? adaptedTask : t
+      );
+      this.tasksSubject.next(updatedTasks);
+    });
   }
 
-  deleteTask(id: string) {
-    const currentTasks = this.tasksSubject.getValue();
-    const updatedTasks = currentTasks.filter(t => t.id !== id);
-    this.saveTasks(updatedTasks);
+  deleteTask(id: number) {
+    this.api.deleteTask(id).subscribe(() => {
+      const updatedTasks = this.tasksSubject.getValue().filter(t => t.id !== id);
+      this.tasksSubject.next(updatedTasks);
+    });
   }
 
   // Categories
-  addCategory(category: Category) {
-    const cats = this.categoriesSubject.getValue();
-    this.saveCategories([...cats, category]);
+  addCategory(category: Partial<Category>) {
+    this.api.createCategory(category).subscribe(newCat => {
+      const current = this.categoriesSubject.getValue();
+      this.categoriesSubject.next([...current, newCat]);
+    });
   }
 
   updateCategory(updated: Category) {
-    const current = this.categoriesSubject.getValue();
-    const updatedList = current.map(c => c.id === updated.id ? updated : c);
-    this.saveCategories(updatedList);
+    this.api.updateCategory(updated.id, updated).subscribe(cat => {
+      const updatedList = this.categoriesSubject.getValue().map(c =>
+        c.id === cat.id ? cat : c
+      );
+      this.categoriesSubject.next(updatedList);
+    });
   }
 
-  deleteCategory(id: string) {
-    const updatedCats = this.categoriesSubject.getValue().filter(c => c.id !== id);
-    this.saveCategories(updatedCats);
+  deleteCategory(id: number) {
+    this.api.deleteCategory(id).subscribe(() => {
+      const updatedCats = this.categoriesSubject.getValue().filter(c => c.id !== id);
+      this.categoriesSubject.next(updatedCats);
 
-    const updatedTasks = this.tasksSubject.getValue().map(t =>
-      t.categoryId === id ? { ...t, categoryId: undefined } : t
-    );
-    this.saveTasks(updatedTasks);
+      const updatedTasks = this.tasksSubject.getValue().map(t =>
+        t.category?.id === id ? { ...t, category: null, category_id: undefined } : t
+      );
+      this.tasksSubject.next(updatedTasks);
+    });
   }
 }

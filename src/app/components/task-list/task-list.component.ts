@@ -33,7 +33,8 @@ import { Task, Category } from '../../core/models/models';
 export class TaskListComponent implements OnInit {
   @Input() tasks: Task[] = [];
   @Input() categories: Category[] = [];
-  @Input() filterCategoryId: string | null = null;
+
+  @Input() filterCategoryId: number | null = null;
 
   @Output() toggleCompleted = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<Task>();
@@ -44,13 +45,13 @@ export class TaskListComponent implements OnInit {
   ngOnInit() {}
 
   filteredTasks(): Task[] {
-    if (!this.filterCategoryId) return this.tasks;
-    return this.tasks.filter((t) => t.categoryId === this.filterCategoryId);
+    if (this.filterCategoryId === null) return this.tasks;
+    return this.tasks.filter((t) => t.category_id === this.filterCategoryId);
   }
 
-  getCategoryName(categoryId: string | undefined): string {
-    if (!categoryId) return '';
-    const category = this.categories.find((c) => c.id === categoryId);
+  getCategoryName(category_id: number | undefined): string {
+    if (category_id === undefined) return '';
+    const category = this.categories.find((c) => c.id === category_id);
     return category ? category.name : '';
   }
 
@@ -65,5 +66,4 @@ export class TaskListComponent implements OnInit {
   onEditTask(task: Task) {
     this.editTask.emit(task);
   }
-
 }

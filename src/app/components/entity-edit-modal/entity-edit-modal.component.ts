@@ -1,4 +1,3 @@
-// entity-edit-modal.component.ts
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -56,12 +55,13 @@ export class EntityEditModalComponent implements OnInit, OnChanges {
     (this.editedEntity as Task).description = value;
   }
 
-  get categoryId(): string {
-    return (this.editedEntity as Task).categoryId ?? '';
+  get category_id(): string {
+    const id = (this.editedEntity as Task).category_id;
+    return id !== undefined && id !== null ? id.toString() : '';
   }
 
-  set categoryId(value: string) {
-    (this.editedEntity as Task).categoryId = value;
+  set category_id(value: string) {
+    (this.editedEntity as Task).category_id = value ? parseInt(value, 10) : undefined;
   }
 
   onSave(): void {
