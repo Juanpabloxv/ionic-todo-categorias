@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Category } from '../models';
-import { TaskService } from '../services/task.service';
+import { Task, Category } from '../../core/models/models';
+import { TaskService } from '../../core/services/task.service';
 import { v4 as uuidv4 } from 'uuid';
 import { IonicModule, AlertController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';

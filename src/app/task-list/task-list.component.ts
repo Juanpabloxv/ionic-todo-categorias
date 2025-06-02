@@ -11,7 +11,7 @@ import {
   IonInput,
 } from '@ionic/angular/standalone';
 
-import { Task, Category } from '../models';
+import { Task, Category } from '../core/models/models';
 
 @Component({
   selector: 'app-task-list',

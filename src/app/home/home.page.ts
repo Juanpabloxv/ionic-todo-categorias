@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { TaskService } from '../services/task.service';
-import { Task, Category } from '../models';
+import { TaskService } from '../core/services/task.service';
+import { Task, Category } from '../core/models/models';
 import { v4 as uuidv4 } from 'uuid';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 
