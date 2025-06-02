@@ -5,11 +5,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 
 import { CommonModule } from '@angular/common';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { TaskListComponent } from '../task-list/task-list.component';
+import { EditTaskModalComponent } from '../components/edit-task-modal/edit-task-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -21,15 +21,15 @@ import { TaskListComponent } from '../task-list/task-list.component';
     CommonModule,
     FormsModule,
     RouterModule,
-    TaskListComponent
   ],
-  providers: [Keyboard] // <-- Asegura que el plugin esté disponible
+  providers: [Keyboard]
 })
 export class HomePage {
   tasks: Task[] = [];
   categories: Category[] = [];
   filterCategoryId: string | null = null;
   newTaskTitle = '';
+  newTaskDescription = '';
 
   @ViewChild('taskInput', { static: false }) taskInputRef!: ElementRef;
 
@@ -38,7 +38,8 @@ export class HomePage {
   constructor(
     private taskService: TaskService,
     private alertController: AlertController,
-    private keyboard: Keyboard // <-- Inyectamos el servicio
+    private keyboard: Keyboard,
+    private modalController: ModalController
   ) {
     this.taskService.tasks$.subscribe(tasks => this.tasks = tasks);
     this.taskService.categories$.subscribe(cats => this.categories = cats);
@@ -49,13 +50,15 @@ export class HomePage {
     const task: Task = {
       id: uuidv4(),
       title: this.newTaskTitle.trim(),
+      description: this.newTaskDescription.trim(),
       completed: false,
       categoryId: this.filterCategoryId || undefined
     };
+
     this.taskService.addTask(task);
     this.newTaskTitle = '';
+    this.newTaskDescription = '';
 
-    // Reabrir teclado al agregar tarea
     setTimeout(() => {
       const inputEl = this.taskInputRef?.nativeElement?.querySelector('input');
       if (inputEl) {
@@ -78,16 +81,11 @@ export class HomePage {
       header: 'Confirmar eliminación',
       message: `¿Seguro que quieres eliminar la tarea "${task.title}"?`,
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Eliminar',
           cssClass: 'danger',
-          handler: () => {
-            this.deleteTask(task);
-          }
+          handler: () => this.deleteTask(task)
         }
       ]
     });
@@ -110,7 +108,21 @@ export class HomePage {
     return category ? category.name : '';
   }
 
-  onEditTask(updatedTask: Task) {
-  this.taskService.updateTask(updatedTask);
-}
+  async onEditTaskRequest(task: Task) {
+    const modal = await this.modalController.create({
+      component: EditTaskModalComponent,
+      componentProps: {
+        task: { ...task },
+        categories: this.categories
+      }
+    });
+
+    await modal.present();
+
+    const { data, role } = await modal.onDidDismiss();
+
+    if (role === 'save' && data) {
+      this.taskService.updateTask(data);
+    }
+  }
 }
