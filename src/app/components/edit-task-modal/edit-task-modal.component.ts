@@ -32,10 +32,20 @@ export class EditTaskModalComponent implements OnInit, OnChanges {
   }
 
   onSave(): void {
-    this.modalController.dismiss(this.editedTask, 'save');
+  const activeEl = document.activeElement as HTMLElement;
+  if (activeEl) {
+    activeEl.blur();
   }
 
+  this.modalController.dismiss(this.editedTask, 'save');
+}
+
   onCancel(): void {
-    this.modalController.dismiss(null, 'cancel');
+  const activeEl = document.activeElement as HTMLElement;
+  if (activeEl) {
+    activeEl.blur();
   }
+
+  this.modalController.dismiss(null, 'cancel');
+}
 }

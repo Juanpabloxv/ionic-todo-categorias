@@ -9,9 +9,10 @@ import {
   IonButton,
   IonIcon,
   IonInput,
+  IonBadge,
 } from '@ionic/angular/standalone';
 
-import { Task, Category } from '../core/models/models';
+import { Task, Category } from '../../core/models/models';
 
 @Component({
   selector: 'app-task-list',
@@ -28,6 +29,7 @@ import { Task, Category } from '../core/models/models';
     IonButton,
     IonIcon,
     IonInput,
+    IonBadge,
   ],
 })
 export class TaskListComponent implements OnInit {
