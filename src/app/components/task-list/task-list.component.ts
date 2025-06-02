@@ -8,7 +8,6 @@ import {
   IonCheckbox,
   IonButton,
   IonIcon,
-  IonInput,
   IonBadge,
 } from '@ionic/angular/standalone';
 
@@ -28,7 +27,6 @@ import { Task, Category } from '../../core/models/models';
     IonCheckbox,
     IonButton,
     IonIcon,
-    IonInput,
     IonBadge,
   ],
 })
@@ -40,9 +38,6 @@ export class TaskListComponent implements OnInit {
   @Output() toggleCompleted = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<Task>();
   @Output() editTask = new EventEmitter<Task>();
-
-  editingTaskId: string | null = null;
-  editedTaskTitle = '';
 
   constructor() {}
 
@@ -67,25 +62,8 @@ export class TaskListComponent implements OnInit {
     this.deleteTask.emit(task);
   }
 
-  startEditing(task: Task) {
-    this.editingTaskId = task.id;
-    this.editedTaskTitle = task.title;
+  onEditTask(task: Task) {
+    this.editTask.emit(task);
   }
 
-  cancelEditing() {
-    this.editingTaskId = null;
-    this.editedTaskTitle = '';
-  }
-
-  updateTask(task: Task) {
-    const trimmed = this.editedTaskTitle.trim();
-    if (!trimmed || trimmed === task.title) {
-      this.cancelEditing();
-      return;
-    }
-
-    const updatedTask: Task = { ...task, title: trimmed };
-    this.editTask.emit(updatedTask);
-    this.cancelEditing();
-  }
 }

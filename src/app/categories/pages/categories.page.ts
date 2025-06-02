@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
-import { Task, Category } from '../../core/models/models';
 import { TaskService } from '../../core/services/task.service';
+import { Category } from '../../core/models/models';
 import { v4 as uuidv4 } from 'uuid';
-import { IonicModule, AlertController } from '@ionic/angular';
+import {
+  IonicModule,
+  AlertController,
+  ModalController
+} from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { EntityEditModalComponent } from '../../components/entity-edit-modal/entity-edit-modal.component';
 
 @Component({
   selector: 'app-categories',
@@ -17,19 +22,19 @@ import { RouterModule } from '@angular/router';
 export class CategoriesPage {
   categories: Category[] = [];
   newCategoryName = '';
-  editingCategoryId: string | null = null;
-  editedCategoryName = '';
 
   constructor(
     private taskService: TaskService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController
   ) {
-    this.taskService.categories$.subscribe(cats => this.categories = cats);
+    this.taskService.categories$.subscribe(cats => (this.categories = cats));
   }
 
   addCategory() {
-    if (!this.newCategoryName.trim()) return;
-    const category: Category = { id: uuidv4(), name: this.newCategoryName.trim() };
+    const name = this.newCategoryName.trim();
+    if (!name) return;
+    const category: Category = { id: uuidv4(), name };
     this.taskService.addCategory(category);
     this.newCategoryName = '';
   }
@@ -46,9 +51,7 @@ export class CategoriesPage {
         {
           text: 'Eliminar',
           role: 'destructive',
-          handler: () => {
-            this.deleteCategory(category.id);
-          }
+          handler: () => this.deleteCategory(category.id)
         }
       ]
     });
@@ -59,24 +62,21 @@ export class CategoriesPage {
     this.taskService.deleteCategory(id);
   }
 
-  startEditing(category: Category) {
-    this.editingCategoryId = category.id;
-    this.editedCategoryName = category.name;
-  }
+  async openEditCategoryModal(category: Category) {
+    const modal = await this.modalController.create({
+      component: EntityEditModalComponent,
+      componentProps: {
+        entity: { ...category },
+        entityType: 'category'
+      },
+      cssClass: 'edit-task-modal'
+    });
 
-  cancelEditing() {
-    this.editingCategoryId = null;
-    this.editedCategoryName = '';
-  }
+    await modal.present();
 
-  updateCategory(category: Category) {
-    const trimmed = this.editedCategoryName.trim();
-    if (!trimmed || trimmed === category.name) {
-      this.cancelEditing();
-      return;
+    const { data, role } = await modal.onDidDismiss();
+    if (role === 'save' && data) {
+      this.taskService.updateCategory(data);
     }
-    const updated: Category = { ...category, name: trimmed };
-    this.taskService.updateCategory(updated);
-    this.cancelEditing();
   }
 }

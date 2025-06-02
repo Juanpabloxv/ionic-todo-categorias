@@ -11,65 +11,29 @@
   <!-- Lista de categorías -->
   <ion-list>
     <ion-item *ngFor="let category of categories" lines="full" class="category-item">
-      
-      <!-- Modo edición -->
-      <div *ngIf="editingCategoryId === category.id" class="edit-container" style="display: flex; align-items: center; gap: 8px; width: 100%;">
-        <ion-input
-          [(ngModel)]="editedCategoryName"
-          placeholder="Editar nombre"
-          clearInput
-          autocorrect="off"
-          autocomplete="off"
-          autocapitalize="words"
-          style="flex: 1;"
-        ></ion-input>
-
+      <ion-label style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        {{ category.name }}
+      </ion-label>
+      <ion-buttons slot="end">
         <ion-button
           fill="clear"
-          color="success"
-          (click)="updateCategory(category)"
-          title="Guardar"
+          color="primary"
+          (click)="openEditCategoryModal(category)"
+          title="Editar"
           size="small"
         >
-          <ion-icon name="checkmark-outline"></ion-icon>
+          <ion-icon name="create-outline"></ion-icon>
         </ion-button>
         <ion-button
           fill="clear"
-          color="medium"
-          (click)="cancelEditing()"
-          title="Cancelar"
+          color="danger"
+          (click)="confirmDeleteCategory(category)"
+          title="Eliminar"
           size="small"
         >
-          <ion-icon name="close-outline"></ion-icon>
+          <ion-icon name="trash"></ion-icon>
         </ion-button>
-      </div>
-
-      <!-- Modo visualización -->
-      <div *ngIf="editingCategoryId !== category.id" class="view-container" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-        <ion-label style="flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          {{ category.name }}
-        </ion-label>
-        <div class="item-actions" style="display: flex; gap: 6px;">
-          <ion-button
-            fill="clear"
-            color="primary"
-            (click)="startEditing(category)"
-            title="Editar"
-            size="small"
-          >
-            <ion-icon name="create-outline"></ion-icon>
-          </ion-button>
-          <ion-button
-            fill="clear"
-            color="danger"
-            (click)="confirmDeleteCategory(category)"
-            title="Eliminar"
-            size="small"
-          >
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
-        </div>
-      </div>
+      </ion-buttons>
     </ion-item>
   </ion-list>
 

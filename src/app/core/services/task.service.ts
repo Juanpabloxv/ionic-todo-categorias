@@ -53,9 +53,8 @@ export class TaskService {
 
   // Categories
   addCategory(category: Category) {
-    const cats = this.loadCategories();
-    cats.push(category);
-    this.saveCategories(cats);
+    const cats = this.categoriesSubject.getValue();
+    this.saveCategories([...cats, category]);
   }
 
   updateCategory(updated: Category) {
@@ -65,10 +64,12 @@ export class TaskService {
   }
 
   deleteCategory(id: string) {
-    const cats = this.loadCategories().filter(c => c.id !== id);
-    this.saveCategories(cats);
+    const updatedCats = this.categoriesSubject.getValue().filter(c => c.id !== id);
+    this.saveCategories(updatedCats);
 
-    const tasks = this.loadTasks().map(t => t.categoryId === id ? { ...t, categoryId: undefined } : t);
-    this.saveTasks(tasks);
+    const updatedTasks = this.tasksSubject.getValue().map(t =>
+      t.categoryId === id ? { ...t, categoryId: undefined } : t
+    );
+    this.saveTasks(updatedTasks);
   }
 }

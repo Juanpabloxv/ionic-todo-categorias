@@ -9,7 +9,7 @@ import { IonicModule, AlertController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { EditTaskModalComponent } from '../components/edit-task-modal/edit-task-modal.component';
+import { EntityEditModalComponent } from '../components/entity-edit-modal/entity-edit-modal.component';
 import { TaskListComponent } from '../components/task-list/task-list.component';
 
 @Component({
@@ -111,22 +111,22 @@ export class HomePage {
   }
 
   async onEditTaskRequest(task: Task, event?: Event) {
-    // Solo intentar hacer blur si se recibió un evento
     const opener = event?.target as HTMLElement;
     opener?.blur?.();
 
     const modal = await this.modalController.create({
-      component: EditTaskModalComponent,
+      component: EntityEditModalComponent,
       componentProps: {
-        task: { ...task },
+        entity: { ...task },
+        entityType: 'task',
         categories: this.categories
-      }
+      },
+      cssClass: 'edit-task-modal'
     });
 
     await modal.present();
 
     const { data, role } = await modal.onDidDismiss();
-
     document.activeElement instanceof HTMLElement && document.activeElement.blur();
 
     if (role === 'save' && data) {

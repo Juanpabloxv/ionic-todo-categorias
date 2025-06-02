@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{ entityType === 'task' ? 'Editar tarea' : 'Editar categoría' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Campo para nombre o título -->
+  <ion-item>
+    <ion-input
+      [(ngModel)]="titleOrName"
+      [placeholder]="entityType === 'task' ? 'Título' : 'Nombre de categoría'"
+      autocorrect="off"
+      autocomplete="off"
+      autocapitalize="words"
+    ></ion-input>
+  </ion-item>
+
+  <!-- Campo descripción (solo para tareas) -->
+  <ion-item *ngIf="entityType === 'task'">
+    <ion-input
+      [(ngModel)]="description"
+      placeholder="Descripción"
+      autocorrect="off"
+      autocomplete="off"
+    ></ion-input>
+  </ion-item>
+
+  <!-- Selector de categoría (solo para tareas) -->
+  <ion-item *ngIf="entityType === 'task'">
+    <ion-select
+      [(ngModel)]="categoryId"
+      placeholder="Selecciona una categoría"
+    >
+      <ion-select-option
+        *ngFor="let cat of categories"
+        [value]="cat.id"
+      >
+        {{ cat.name }}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Botones -->
+  <div class="modal-actions" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
+    <ion-button color="medium" fill="outline" (click)="onCancel()">Cancelar</ion-button>
+    <ion-button color="primary" (click)="onSave()">Guardar</ion-button>
+  </div>
+
+</ion-content>

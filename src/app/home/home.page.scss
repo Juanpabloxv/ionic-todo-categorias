@@ -1,6 +1,7 @@
 /* Estilos específicos para móvil */
 @media (max-width: 768px) {
-  .mobile-input, .mobile-select {
+  .mobile-input,
+  .mobile-select {
     font-size: 16px !important;
     min-height: 44px !important;
     width: 100% !important;
@@ -20,4 +21,12 @@
   ion-segment {
     margin-bottom: 15px;
   }
+}
+
+.edit-task-modal .modal-wrapper {
+  height: auto !important;
+  max-height: 70vh !important;
+  border-radius: 16px !important;
+  align-self: center !important;
+  overflow: hidden !important;
 }
