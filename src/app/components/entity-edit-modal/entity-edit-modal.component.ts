@@ -61,7 +61,7 @@ export class EntityEditModalComponent implements OnInit, OnChanges {
   }
 
   set category_id(value: string) {
-    (this.editedEntity as Task).category_id = value ? parseInt(value, 10) : undefined;
+    (this.editedEntity as Task).category_id = value || null;
   }
 
   onSave(): void {

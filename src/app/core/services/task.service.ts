@@ -3,6 +3,13 @@ import { BehaviorSubject } from 'rxjs';
 import { Task, Category } from '../models/models';
 import { ApiService } from './api.service';
 
+type TaskPayload = {
+  title?: string;
+  description?: string;
+  status?: 'pending' | 'completed';
+  category: string | null;
+};
+
 @Injectable({ providedIn: 'root' })
 export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>([]);
@@ -17,29 +24,52 @@ export class TaskService {
 
   private loadAllData() {
     this.api.getCategories().subscribe(categories => this.categoriesSubject.next(categories));
+
     this.api.getTasks().subscribe(tasksFromApi => {
       const adaptedTasks = tasksFromApi.map(task => ({
         ...task,
-        category_id: task.category?.id ?? null // Adaptamos para usar en el frontend
+        // Si el backend envía solo el ID en `category`, lo usamos como category_id
+        category_id: typeof task.category === 'string' ? task.category : task.category?.id ?? null,
+        category: null  // Limpiamos el campo category para evitar confusión
       }));
       this.tasksSubject.next(adaptedTasks);
     });
   }
 
-  // Tasks
+  fetchTasks() {
+    this.api.getTasks().subscribe(tasksFromApi => {
+      const adaptedTasks = tasksFromApi.map(task => ({
+        ...task,
+        category_id: typeof task.category === 'string' ? task.category : task.category?.id ?? null,
+        category: null
+      }));
+      this.tasksSubject.next(adaptedTasks);
+    });
+  }  
+
   addTask(task: Partial<Task>) {
-    this.api.createTask(task).subscribe(newTask => {
-      const adaptedTask = {
-        ...newTask,
-        category_id: newTask.category?.id ?? null
-      };
-      const current = this.tasksSubject.getValue();
-      this.tasksSubject.next([...current, adaptedTask]);
+    const dataToSend: TaskPayload = {
+      title: task.title,
+      description: task.description,
+      status: task.status || 'pending',
+      category: task.category_id ?? null
+    };
+
+    this.api.createTask(dataToSend).subscribe(() => {
+      // Luego de crear la tarea, recargar desde el backend
+      this.fetchTasks();
     });
   }
 
   updateTask(updated: Task) {
-    this.api.updateTask(updated.id, updated).subscribe(task => {
+    const dataToSend: TaskPayload = {
+      title: updated.title,
+      description: updated.description,
+      status: updated.status,
+      category: updated.category_id ?? null
+    };
+
+    this.api.updateTask(updated.id, dataToSend).subscribe(task => {
       const adaptedTask = {
         ...task,
         category_id: task.category?.id ?? null
@@ -51,14 +81,14 @@ export class TaskService {
     });
   }
 
-  deleteTask(id: number) {
+  deleteTask(id: string) {
     this.api.deleteTask(id).subscribe(() => {
       const updatedTasks = this.tasksSubject.getValue().filter(t => t.id !== id);
       this.tasksSubject.next(updatedTasks);
     });
   }
 
-  // Categories
+  // 🔵 CATEGORIES
   addCategory(category: Partial<Category>) {
     this.api.createCategory(category).subscribe(newCat => {
       const current = this.categoriesSubject.getValue();
@@ -75,7 +105,7 @@ export class TaskService {
     });
   }
 
-  deleteCategory(id: number) {
+  deleteCategory(id: string) {
     this.api.deleteCategory(id).subscribe(() => {
       const updatedCats = this.categoriesSubject.getValue().filter(c => c.id !== id);
       this.categoriesSubject.next(updatedCats);

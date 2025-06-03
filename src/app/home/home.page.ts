@@ -28,7 +28,7 @@ import { TaskListComponent } from '../components/task-list/task-list.component';
 export class HomePage {
   tasks: Task[] = [];
   categories: Category[] = [];
-  filterCategoryId: number | null = null;  // CAMBIO
+  filterCategoryId: string | null = null;
   newTaskTitle = '';
   newTaskDescription = '';
 
@@ -53,7 +53,7 @@ export class HomePage {
       title: this.newTaskTitle.trim(),
       description: this.newTaskDescription.trim(),
       status: 'pending',
-      category_id: this.filterCategoryId ?? undefined  // CAMBIO
+      category_id: this.filterCategoryId ?? undefined
     };
 
     this.taskService.addTask(taskData);
@@ -71,7 +71,7 @@ export class HomePage {
 
   toggleCompleted(task: Task) {
     const updatedStatus = task.status === 'completed' ? 'pending' : 'completed';
-    this.taskService.updateTask({ ...task, status: updatedStatus }); // CAMBIO
+    this.taskService.updateTask({ ...task, status: updatedStatus });
   }
 
   deleteTask(task: Task) {
@@ -97,16 +97,16 @@ export class HomePage {
 
   filteredTasks() {
     if (this.filterCategoryId === null) return this.tasks;
-    return this.tasks.filter(t => t.category_id === this.filterCategoryId); // CAMBIO
+    return this.tasks.filter(t => t.category_id === this.filterCategoryId);
   }
 
-  setFilter(category_id: number | null) {
+  setFilter(category_id: string | null) {
     this.filterCategoryId = category_id;
   }
 
-  getCategoryName(category_id: number | undefined): string {
+  getCategoryName(category_id: string | null | undefined): string {
     if (!category_id) return '';
-    const category = this.categories.find(c => c.id === category_id); // CAMBIO
+    const category = this.categories.find(c => c.id.toString() === category_id);
     return category ? category.name : '';
   }
 

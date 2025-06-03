@@ -34,7 +34,7 @@ export class TaskListComponent implements OnInit {
   @Input() tasks: Task[] = [];
   @Input() categories: Category[] = [];
 
-  @Input() filterCategoryId: number | null = null;
+  @Input() filterCategoryId: string | null = null;
 
   @Output() toggleCompleted = new EventEmitter<Task>();
   @Output() deleteTask = new EventEmitter<Task>();
@@ -49,9 +49,9 @@ export class TaskListComponent implements OnInit {
     return this.tasks.filter((t) => t.category_id === this.filterCategoryId);
   }
 
-  getCategoryName(category_id: number | undefined): string {
-    if (category_id === undefined) return '';
-    const category = this.categories.find((c) => c.id === category_id);
+  getCategoryName(category_id: string | null | undefined): string {
+    if (!category_id) return '';
+    const category = this.categories.find(c => c.id.toString() === category_id);
     return category ? category.name : '';
   }
 

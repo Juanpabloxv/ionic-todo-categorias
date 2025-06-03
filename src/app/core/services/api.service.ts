@@ -15,19 +15,19 @@ export class ApiService {
     return this.http.get<Task[]>(`${this.BASE_URL}/tasks/`);
   }
 
-  getTask(id: number): Observable<Task> {
+  getTask(id: string): Observable<Task> {
     return this.http.get<Task>(`${this.BASE_URL}/tasks/${id}/`);
   }
 
-  createTask(task: Partial<Task>): Observable<Task> {
+  createTask(task: { title?: string; description?: string; status?: 'pending' | 'completed'; category: string | null }): Observable<Task> {
     return this.http.post<Task>(`${this.BASE_URL}/tasks/`, task);
   }
 
-  updateTask(id: number, task: Partial<Task>): Observable<Task> {
+  updateTask(id: string, task: { title?: string; description?: string; status?: 'pending' | 'completed'; category: string | null }): Observable<Task> {
     return this.http.put<Task>(`${this.BASE_URL}/tasks/${id}/`, task);
   }
 
-  deleteTask(id: number): Observable<any> {
+  deleteTask(id: string): Observable<any> {
     return this.http.delete(`${this.BASE_URL}/tasks/${id}/`);
   }
 
@@ -37,7 +37,7 @@ export class ApiService {
     return this.http.get<Category[]>(`${this.BASE_URL}/categories/`);
   }
 
-  getCategory(id: number): Observable<Category> {
+  getCategory(id: string): Observable<Category> {
     return this.http.get<Category>(`${this.BASE_URL}/categories/${id}/`);
   }
 
@@ -45,11 +45,11 @@ export class ApiService {
     return this.http.post<Category>(`${this.BASE_URL}/categories/`, category);
   }
 
-  updateCategory(id: number, category: Partial<Category>): Observable<Category> {
+  updateCategory(id: string, category: Partial<Category>): Observable<Category> {
     return this.http.put<Category>(`${this.BASE_URL}/categories/${id}/`, category);
   }
 
-  deleteCategory(id: number): Observable<any> {
+  deleteCategory(id: string): Observable<any> {
     return this.http.delete(`${this.BASE_URL}/categories/${id}/`);
   }
 }

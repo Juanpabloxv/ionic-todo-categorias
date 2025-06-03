@@ -39,7 +39,7 @@ export class CategoriesPage {
     this.newCategoryName = '';
   }
 
-  deleteCategory(id: number) {
+  deleteCategory(id: string) {
     this.taskService.deleteCategory(id);
   }
 
